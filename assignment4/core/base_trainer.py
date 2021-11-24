@@ -103,12 +103,12 @@ class BaseTrainer:
             # [TODO] Get the actions and the log probability of the action from the output of neural network.
             # Please use normal distribution.
             means, log_std, values = self.model(obs)
-            pass
+            dist = torch.distributions.Normal(means, torch.exp(log_std))
             if deterministic:  # Use the means as the action
-                actions = None
+                actions = means
             else:
-                actions = None
-            action_log_probs = None
+                actions = dist.sample()
+            action_log_probs = torch.sum(dist.log_prob(actions), 1)
 
             actions = actions.view(-1, self.num_actions)
 

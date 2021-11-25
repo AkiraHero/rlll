@@ -19,7 +19,7 @@ class A2CConfig(object):
         # Common
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.save_freq = 50
-        self.log_freq = 5
+        self.log_freq = 1
         self.num_envs = 1
 
         # Sample

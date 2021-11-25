@@ -230,6 +230,7 @@ def train(args):
                 ),
                 iteration=iteration
             )
+            print("==================================================")
 
             progress.append(stats)
             pretty_print({
@@ -250,8 +251,8 @@ def train(args):
         iteration += 1
 
     trainer.save_w(log_dir, "final")
+    save_progress(log_dir, progress)
     envs.close()
-
 
 if __name__ == '__main__':
     train(args)

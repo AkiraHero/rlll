@@ -6,6 +6,7 @@ import copy
 import os
 import os.path as osp
 import sys
+from collections import deque
 
 import gym
 import numpy as np
@@ -207,8 +208,8 @@ class TD3Trainer:
 
 # Runs policy for X episodes and returns average reward
 # A fixed seed is used for the eval environment
-def eval_policy(policy, env_name, seed, eval_episodes=10):
-    eval_env = gym.make(env_name)
+def eval_policy(policy, eval_env, seed, eval_episodes=10):
+
     eval_env.seed(seed + 100)
 
     avg_reward = 0.
@@ -226,6 +227,16 @@ def eval_policy(policy, env_name, seed, eval_episodes=10):
     print("---------------------------------------")
     return avg_reward
 
+def summary(array, name, extra_dict=None):
+    array = np.asarray(array, dtype=np.float32)
+    ret = {
+        "{}_mean".format(name): float(np.mean(array)) if len(array) else np.nan,
+        "{}_min".format(name): float(np.min(array)) if len(array) else np.nan,
+        "{}_max".format(name): float(np.max(array)) if len(array) else np.nan,
+    }
+    if extra_dict:
+        ret.update(extra_dict)
+    return ret
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -234,7 +245,7 @@ if __name__ == "__main__":
     parser.add_argument("-lr", default=5e-5, type=float)
     parser.add_argument(
         "--log-dir",
-        default="data/",
+        default="data-MetaDrive-Tut-Easy-v0/",
         type=str,
         help="The path of directory that you want to store the data to. "
              "Default: ./data/"
@@ -304,6 +315,8 @@ if __name__ == "__main__":
     episode_timesteps = 0
     episode_num = 0
 
+    reward_recorder = deque(maxlen=100)
+
     for t in range(int(args.max_timesteps)):
 
         episode_timesteps += 1
@@ -336,6 +349,9 @@ if __name__ == "__main__":
             policy.train(replay_buffer, args.batch_size)
 
         if done:
+            # record reward
+            reward_recorder.append(episode_reward)
+
             # +1 to account for 0 indexing. +0 on ep_timesteps since it will increment +1 even if done=True
             print(
                 f"Total T: {t + 1} Episode Num: {episode_num + 1} Episode T: {episode_timesteps} Reward: {episode_reward:.3f}")
@@ -346,4 +362,12 @@ if __name__ == "__main__":
             episode_num += 1
 
         if (t + 1) % args.save_freq == 0:
-            policy.save(f"{log_dir}/models/default")
+            # evaluations.append(eval_policy(policy, args.env, args.seed))
+            stats = {
+                'training_episode_reward' : np.mean(reward_recorder),
+                'total_step' : t
+            }
+            filename="step-{}".format(t)
+            with open(f"{log_dir}/results/{filename}", 'wb') as f:
+                np.save(f, stats)
+            policy.save(f"{log_dir}/models/filename")

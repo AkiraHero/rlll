@@ -103,8 +103,12 @@ class PPORolloutStorage(A2CRolloutStorage):
                 #  4. The for-loop is in a reverse order, so the variable
                 #   `step` is started from `num_steps`
                 #  5. Check the notebook for more information.
-                d = self.rewards[step] + gamma * self.value_preds[step + 1] * self.masks[step] - self.value_preds[step]
-                self.returns[step] = d + gamma * self.gae_lambda * self.masks[step] * self.returns[step + 1]
+
+                delta = self.rewards[step] + gamma * self.value_preds[step + 1] * self.masks[step + 1] - \
+                        self.value_preds[step]
+                gae = delta + gamma * self.gae_lambda * self.masks[step + 1] * gae
+                self.returns[step] = gae + self.value_preds[step]
+                
 
         else:
             # We don't test this case

@@ -58,10 +58,8 @@ class A2CRolloutStorage:
             #   when the t=`step` state is the terminal state, at which time
             #   the mask is 0 and otherwise 1.
             #  3. self.rewards stores the rewards at each timestep.
-            self.returns[step] = self.rewards[step] + gamma * self.returns[step + 1] * self.masks[step]
+            self.returns[step] = self.rewards[step] + gamma * self.returns[step + 1] * self.masks[step + 1]
 
-            # self.returns[step] = None
-            pass
 
 
 class PPORolloutStorage(A2CRolloutStorage):

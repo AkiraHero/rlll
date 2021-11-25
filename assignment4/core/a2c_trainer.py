@@ -62,20 +62,17 @@ class A2CTrainer(BaseTrainer):
         action_log_probs = action_log_probs.view(num_steps, num_processes, 1)
 
         # [TODO] Get the unnormalized advantages
-        advantages = None
-        pass
+        advantages = self.rollouts.returns[:-1] - values
 
         advantages_mean = advantages.mean().item()  # Used to record statistics
 
         # [TODO] Get the value loss
-        value_loss = None
-        pass
+        value_loss = advantages.pow(2).mean()
 
         # [TODO] Get the policy loss
-        policy_loss = None
-        pass
+        policy_loss = -(advantages.detach() * action_log_probs).mean()
 
-
+        dist_entropy = dist_entropy.mean()
         # print(
         #     "Log Prob Mean: ", action_log_probs.mean().item(),
         #     ". Adv Mean: ", advantages.mean().item(),
@@ -94,9 +91,9 @@ class A2CTrainer(BaseTrainer):
         total_loss, action_loss, value_loss, dist_entropy, adv = self.compute_loss(rollout)
         # [TODO] Step self.optimizer by computing the gradient of total loss
         # Hint: remember to clip the gradient to self.grad_norm_max and set the gradient norm to variable norm.
-        norm = None
-        pass
-
-
+        norm = torch.tensor(self.grad_norm_max)
+        total_loss.backward()
+        torch.nn.utils.clip_grad_norm_(self.model.parameters(), self.grad_norm_max)
+        self.optimizer.step()
         return action_loss.item(), value_loss.item(), dist_entropy.item(), \
                total_loss.item(), norm.item(), adv, 0.0

@@ -370,4 +370,4 @@ if __name__ == "__main__":
             filename="step-{}".format(t)
             with open(f"{log_dir}/results/{filename}", 'wb') as f:
                 np.save(f, stats)
-            policy.save(f"{log_dir}/models/filename")
+            policy.save(f"{log_dir}/models/{filename}")

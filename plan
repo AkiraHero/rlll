@@ -1,5 +1,5 @@
 
-#PPO in MetaDrive Hard
+#PPO in MetaDrive Hard o
 
 train.py \
   --env-id MetaDrive-Tut-Hard-v0 \
@@ -10,7 +10,7 @@ train.py \
   --max-steps 10000000
 
 
-#TD3 in MetaDrive Easy
+#TD3 in MetaDrive Easy o
 td3_trainer.py --env-id MetaDrive-Tut-Easy-v0
  --log-dir data-MetaDrive-Tut-Easy-v0
  
@@ -24,12 +24,12 @@ td3_trainer.py --env-id MetaDrive-Tut-Hard-v0
 MetaDrive-Tut-[1,5,10,20,50,100]Env-v0
 
 
-PPO 1
+PPO 1 on...
 
 train.py \
   --env-id MetaDrive-Tut-1Env-v0 \
   --algo PPO \
-  --log-dir MetaDriveHard \
+  --log-dir MetaDrive-Tut-1Env-v0 \
   --num-envs 10 \
   --asynchronous \
   --max-steps 10000000
@@ -41,7 +41,7 @@ PPO 5
 train.py \
   --env-id MetaDrive-Tut-5Env-v0 \
   --algo PPO \
-  --log-dir MetaDriveHard \
+  --log-dir MetaDrive-Tut-5Env-v0 \
   --num-envs 10 \
   --asynchronous \
   --max-steps 10000000
@@ -52,7 +52,7 @@ PPO 10
 train.py \
   --env-id MetaDrive-Tut-10Env-v0 \
   --algo PPO \
-  --log-dir MetaDriveHard \
+  --log-dir MetaDrive-Tut-10Env-v0 \
   --num-envs 10 \
   --asynchronous \
   --max-steps 10000000
@@ -63,7 +63,7 @@ PPO 20
 train.py \
   --env-id MetaDrive-Tut-20Env-v0 \
   --algo PPO \
-  --log-dir MetaDriveHard \
+  --log-dir MetaDrive-Tut-20Env-v0 \
   --num-envs 10 \
   --asynchronous \
   --max-steps 10000000
